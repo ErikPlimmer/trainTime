@@ -1,0 +1,19 @@
+.jumbotron {
+	background-color: black;
+	color: #FFD700;
+}
+.panel-heading {
+	color: #FFD700;
+	background-color: #560319;
+}
+
+.panel-body {
+	border-style: solid;
+	border-width: 1px;
+	border-color: #560319;
+}
+
+#add-train-btn {
+	background-color: black;
+	color: #FFD700;
+}
