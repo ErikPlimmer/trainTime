@@ -1,3 +1,5 @@
+
+
   var config = {
     apiKey: "AIzaSyBI3aOCRkVOYbk9pX3iMhsiBcwmfvQl_Cc",
     authDomain: "test-86497.firebaseapp.com",
@@ -14,43 +16,70 @@
 
 $("#add-train-btn").click(function(event) {
 	event.preventDefault();
+	  // var timeNow = moment().format("HH:mm");
 
-	  const train ={
+	  // Calculate the next arrival time 
+	const train ={
 	  	name: $("#train-name-input").val().trim(),
 	  	destination: $("#destination-input").val().trim(),
-	  	time: $("#time-input").val().trim(),
+	  	fArrivalTime: $("#time-input").val().trim(),
 	  	frequency: $("#frequency-input").val().trim(),
-	  	arrival:(""), 
-	  	minAway:("")
+	  	arrival:$(), 
+	  	minAway:$()
 	  	};
 
-	  	dbRef.push(train);
+	  	//clears input text function
 	  	clearText();
-  	console.log(train);
+
+  		
+
+		const firstTimeConverted = moment(train.fArrivalTime, "hh:mm");
+		console.log("first converted number" ,firstTimeConverted);
+
+		const timeNow = moment();
+
+		const diffTime = moment().diff(moment(firstTimeConverted), "minutes");
+		console.log(diffTime);
+
+		const tRemainder = diffTime % train.frequency;
+		console.log("remaider" ,tRemainder);
+
+		const tMinutesTillTrain = train.frequency - tRemainder;
+		console.log("MINUTES TILL TRAIN: " + tMinutesTillTrain);
+
+		const nextTrain = moment().add(tMinutesTillTrain, "minutes");
+		console.log("ARRIVAL TIME: " + moment(nextTrain).format("hh:mm"));
+
+
+		train.arrival = moment(nextTrain).format("hh:mm");
+
+		train.minAway = tMinutesTillTrain;
+  		console.log(train);
+
+
+	 // Calulate how many minutes away 
+
+	  	// pushes train object to database
+	  	dbRef.push(train);
+
+		console.log(train.arrival);
+		console.log(train.minAway);
+
 
 });
 
 
 
-// 3. Create Firebase event for adding employee to the database and a row in the html when a user adds an entry
+// Create Firebase event for adding train to the database and a row in the html when a user adds an entry
 dbRef.on("child_added", function(childSnapshot, prevChildKey) {
 
-  // Employee Info
+  // Train object Info
   const train = childSnapshot.val();
 
   
-  // Calculate the next arrival time 
 
-  // newEmp.months = moment().diff(moment.unix(newEmp.start, "X"), "months");
-  // console.log(newEmp.months);
 
-  // Calulate how many minutes away 
-  // newEmp.start = moment.unix(newEmp.start).format("MM/DD/YY");
-
-  // newEmp.billed = newEmp.months * newEmp.rate;
-  // console.log(newEmp.billed);
-
-  // Add each employee's data into the table
+  // Add each train's data into the table
   $("#train-table > tbody").append(createTrainRow(train));
 });
 
@@ -64,13 +93,15 @@ function createTrainRow(train) {
 
   return trow;
 }
-
+	//clears input text function
 	function clearText() {
 		$(".form-control").val("");
 	}
 
-var timeNow = moment().format("HH:mm:ss a");
 
 
-console.log(timeNow);
+
+
+ 
+
 
